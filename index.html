@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Exemplo Local Storage</title>
+</head>
+<body>
+    <div>
+        <form>
+            <select name="idade" id="idade">
+                <option value="0">Indiferente</option>
+                <option value="5">Até 5 anos</option>
+                <option value="10">Até 10 anos</option>
+            </select>
+            <select name="quartos" id="quartos">
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <br>
+            <br>
+            Proprietário <input type="checkbox" value="proprietario" name="tipo_anunciante[]"><br>
+            Corretora <input type="checkbox" value="corretora" name="tipo_anunciante[]"><br>
+            Construtora <input type="checkbox" value="construtora" name="tipo_anunciante[]"><br>
+            Imobiliária <input type="checkbox" value="imobiliaria" name="tipo_anunciante[]"><br>
+
+            <button onclick="buscar()" type="button">Buscar</button>
+        </form>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        function buscar() {
+            var tipos_anunciante = [];
+            $.each($("[name^=tipo_anunciante]"), function(i, v){
+                if($(this).prop("checked")){
+                    tipos_anunciante.push($(this).val());
+                }
+            })
+
+            var bmp_search_options = {
+                idade: $("#idade").val(),
+                quartos: $("#quartos").val(),
+                tipos_anunciante: tipos_anunciante
+            }
+
+            localStorage.setItem("bmp_search_options", JSON.stringify(bmp_search_options));
+            location.href = "/page2.html"
+        }
+
+        $(document).ready(function(){
+            var bmp_search_options = JSON.parse(localStorage.getItem("bmp_search_options"));
+
+            if(bmp_search_options){
+                if(bmp_search_options.idade){
+                    $("#idade option[value=" + bmp_search_options.idade + "]").prop("selected", true);
+                }
+                if(bmp_search_options.quartos){
+                    $("#quartos option[value=" + bmp_search_options.quartos + "]").prop("selected", true);
+                }
+                if(bmp_search_options.tipos_anunciante){
+                    $.each(bmp_search_options.tipos_anunciante, function(i, val){
+                        $("[name^=tipo_anunciante][value=" + val + "]").prop("checked", true);
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+</html>
